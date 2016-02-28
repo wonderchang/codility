@@ -55,22 +55,39 @@
  * Copyright 2009–2016 by Codility Limited. All Rights Reserved. Unauthorized copying, publication or disclosure prohibited.
  */
 function solution(S, P, Q) {
-  var i, j, m, q;
-  var M = P.length;
-  var query = [];
+  var N = S.length, M = P.length;
   var map = { A: 1, C: 2, G: 3, T: 4 };
-  for(m = 0; m < M; m++) {
-    q = 4;
-    for(i = P[m]; i <= Q[m]; i++) {
-      if(map[S[i]] < q) q = map[S[i]];
-      if(q === 1) break;
+  var query = [];
+  var arr = []
+  var i, j, k, flag;
+  // Record the distribution
+  var record = { 1: [], 2: [], 3: [], 4: [] };
+  for(i = 0; i < N; i++) record[map[S[i]]].push(i);
+  // Get the lower bound
+  for(i = 1; i <= 4; i++) if(record[i].length !== 0) arr.push(i);
+  // 2 case: All the same and the others
+  if(arr.length === 1) {
+    for(i = 0; i < M; i++) query.push(arr[0]);
+  }
+  else {
+    for(i = 0; i < M; i++) {
+      flag = 0;
+      for(j = 0; j < arr.length; j++) {
+        for(k = 0; k < record[arr[j]].length; k++) {
+          if(record[arr[j]][k] >= P[i] && record[arr[j]][k] <= Q[i]) {
+            query.push(arr[j]);
+            flag = 1;
+            break;
+          }
+        }
+        if(flag === 1) break;
+      }
     }
-    query.push(q);
   }
   return query;
 }
 /*
  * Time: 12 min
  * Correctness: 100 %
- * Performance: 0 %
+ * Performance: 100 %
  */
